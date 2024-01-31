@@ -1,5 +1,29 @@
+# Introduction
+
+This project is a collection of tools for visualizing and solving potential flow problems.
+
+It provides tools that allows you to do simple things like :
+
+
+<div style="text-align: center;">
+    <img src='images/ContorPlot.png' width='600'>
+ <figcaption>Lifting flow over a cylinder at 6 degrees AoA</figcaption>
+</div>
+
+
+
+and more complex things like this:
+
+<div style="text-align: center;">
+    <img src='images/MultiElementSolution.png'>
+ <figcaption>Source Vortex Panel Method for Slotted NACA0012 at 8 degrees AoA</figcaption>
+</div>
+
+
+and... (eventually) do them as fast as possible.
+
 ## Acknowledgements
-Much thanks goes to [JoshTheEngineer](https://www.youtube.com/@JoshTheEngineer). His videos, derivations and code implementations were an invaluable resource for building this project especially the panel methods.
+Much thanks goes to [JoshTheEngineer](https://www.youtube.com/@JoshTheEngineer). His videos, derivations and code implementations were an invaluable resource for building and validating this project, especially the panel methods.
 
 # Potential Flow Visualizer
 
@@ -18,16 +42,11 @@ These are some constants that provide a default configuration for the plotting. 
 Ultimately, the plot function returns a matplotlib figure object so that can be further manipulated to suit your needs.
 
 ```python
-import numpy as np
-from src import elementary_flows
-from flow_field import FlowField
 
-form
-multiprocessing
-import freeze_support
+from multiprocessing import freeze_support
 
 if __name__ == '__main__':
-    freeze_support()  # This is required for multiprocessing to work
+    freeze_support()  # This is required for multiprocessing to work. It's very basic for now. Will improve it in the future
     NO_OF_POINTS = 1000  # Number of points in the grid. More points means better resolution but slower computation
     X_POS_LIMIT = 5
     Y_POS_LIMIT = 5
@@ -51,6 +70,8 @@ if __name__ == '__main__':
 ## Lifting Flow over a Cylinder
 ### Initial Configuration
 ```python
+import numpy as np
+
     x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS) # X and Y coordinates for the grid
     y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS) # Don't worry, Meshgrid is done internally
     
@@ -63,6 +84,9 @@ if __name__ == '__main__':
 
 ### Defining the flow field
 ```python
+from src.potential_flow import elementary_flows
+from src.potential_flow import FlowField
+
     u1 = elementary_flows.UniformFlow(horizontal_vel=velocity * np.cos(alpha), vertical_vel=velocity * np.sin(alpha))
     v1 = elementary_flows.Vortex(x_pos=0, y_pos=0, circulation=vortex_strength)
     d1 = elementary_flows.Doublet(x_pos=0, y_pos=0, kappa=kappa)
@@ -74,20 +98,30 @@ if __name__ == '__main__':
 
 ### Result
 ### Streamline Contour Plot
-![img.png](images/ContorPlot.png)
+<div style="text-align: center;">
+    <img src='images/ContorPlot.png' width='600'>
+ <figcaption>ifting flow over a cylinder at 6 degrees AoA: Streamline Contours </figcaption>
+</div>
+
 
 ### StreamPlot from Velocity
-![img.png](images/Velocity.png)
+
+<div style="text-align: center;">
+    <img src='images/Velocity.png' width='600'>
+ <figcaption>ifting flow over a cylinder at 6 degrees AoA: Streamplot </figcaption>
+</div>
 
 ### Calculating circulation
 ```python
 # Add this to imports
-from tuple_collections import FlowFieldProperties, Ellipse, EllipseProperties
-from circulation import compute_ellipse_and_circulation
+from src.code_collections import FlowFieldProperties, Ellipse
+from src.useful import compute_ellipse_and_circulation
 
 if __name__ == '__main__':
     
     # all of the previous code goes here up to the flow definition
+    # Set alpha to 0 to get the same plots here
+    
     # Create ellipse and compute circulation
     X, Y = np.meshgrid(x, y) # Create meshgrid
     velocity_field = flow.get_velocity(X, Y)
@@ -107,7 +141,11 @@ if __name__ == '__main__':
 ### Result
 
 #### Ellipse enclosing the vortex
-![img.png](images/CirculationRegion1.png)
+
+<div style="text-align: center;">
+    <img src='images/CirculationRegion1.png' width='600'>
+     <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Enclosing the vortex </figcaption>
+</div>
 
 Output:
 ```text
@@ -115,7 +153,11 @@ circulation: 125.66287765465529
 ```
 
 #### Ellipse not enclosing the vortex
-![img.png](images/CirculationRegion2.png)
+<div style="text-align: center;">
+    <img src='images/CirculationRegion2.png' width='600'>
+        <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Not enclosing the vortex </figcaption>
+</div>
+
 Output:
 ```text
 circulation: -1.9131363160340698e-12
@@ -124,6 +166,8 @@ circulation: -1.9131363160340698e-12
 ## Rankine Oval
 
 ```python
+from src.potential_flow import elementary_flows
+from src.potential_flow import FlowField
 plotting_kwargs2 = {
     'CONTOR_LEVELS': 50,
 }
@@ -139,17 +183,27 @@ flow.plot_velocity(x, y).show()
 #### Streamline Contour Plot
 
 Streamline Contour Plot
-![img.png](images/StremalinesRakineOval.png)
+<div style="text-align: center;">
+    <img src='images/StremalinesRakineOval.png' width='600'>
+    <figcaption>Rankine Oval: Streamline Contours </figcaption>
+</div>
 
 #### StreamPlot from Velocity
 
-![img.png](images/StreamPlotRankineOval.png)
+<div style="text-align: center;">
+    <img src='images/StreamPlotRankineOval.png' width='600'>
+    <figcaption>Rankine Oval: Streamplot </figcaption>
+</div>
+
+
 
 
 
 ## Kelvin's Oval
 
 ```python
+from src.potential_flow import elementary_flows
+from src.potential_flow import FlowField
 plotting_kwargs2 = {
     'CONTOR_LEVELS': 50,
 }
@@ -163,9 +217,19 @@ flow.plot_velocity(x, y).show()
 
 ### Result
 #### Streamline Contour Plot
-![img.png](images/StreamLinesKelvinOval.png)
+
+<div style="text-align: center;">
+    <img src='images/StreamLinesKelvinOval.png' width='600'>
+    <figcaption>Kelvin Oval: Streamline Contours </figcaption>
+</div>
+
 #### StreamPlot from Velocity
-![img.png](images/StreamPlotKelvinOval.png)
+
+<div style="text-align: center;">
+    <img src='images/StreamPlotKelvinOval.png' width='600'>
+    <figcaption>Kelvin Oval: Streamplot </figcaption>
+</div>
+
 
 # Panel Methods
 ### A Brief Overview
@@ -187,7 +251,7 @@ For the rest of this demontration, a NACA 2412 airfoil at an angle of attack of 
 
 import numpy as np
 import src.code_collections.data_collections as dc
-from src.panel_generator import PanelGenerator
+from src.useful import PanelGenerator # Anything that does not calculate a panel method almost certainly in here
 
 XB, YB = np.loadtxt('xfoil_usable/naca2412.txt', unpack=True)
 V = 1
@@ -205,16 +269,20 @@ The airfoil is modelled as a collection of source panels whose strengths are con
 Only the first boundary condition can be solved since there is no circulation. V<sub>n,j</sub> = 0 is the equation solved for all panels.
 
 ```python
-from src.spm_funcs import run_source_panel_method
+from src.panel_methods import run_source_panel_method
 
 V_normal, V_tangential, lam, u, v = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
                                                             x=x, y=y)
 ```
-With this, you are free to do whatever you want with the results. See [`source_panel_methods_Airfoil.py`](examples/spm_Airfoil.py) for an demonstration of how to use the results.
+With this, you are free to do whatever you want with the results. See [`spm_Airfoil.py`](examples/spm_Airfoil.py) for an demonstration of how to use the results.
 
 Note: lam is the strength of the source panels. It is a numpy array of length N where N is the number of panels.
 
-![Source-Panel-Method-2412-6-deg-AoA.png](images%2FSource-Panel-Method-2412-6-deg-AoA.png)
+
+<div style="text-align: center;">
+    <img src='images/Source-Panel-Method-2412-6-deg-AoA.png'>
+ <figcaption>Source Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
+</div>
 
 ### Vortex Panel Method
 
@@ -226,28 +294,43 @@ The Kutta condition is satisfied by replacing an equation in the system of equat
 As for the code, it is the same as the source panel method except for the function call.
 
 ```python
-from src.vpm import run_vortex_panel_method
+from src.panel_methods import run_vortex_panel_method
 
 V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
                                                               x=x, y=y)
 ```
-See [`vortex_panel_methods_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to use the results.
+See [`vpm_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to use the results.
 
-![Vortex-Panel-Method-2412-6-deg-AoA.png](images%2FVortex-Panel-Method-2412-6-deg-AoA.png)
+<div style="text-align: center;">
+    <img src='images/Vortex-Panel-Method-2412-6-deg-AoA.png'>
+ <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
+</div>
 
 Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
 Even with a well discretized XFOIL generated airfoil, the C<sub>p</sub> value oscillates slightly.
-Now, Watch happens when we generate the same airfoil rather than using an nicer airfoil. I'm not entirely sure why this happens, but it is something to look into further.
+Now, observe what happens when the same airfoil is generated rather than using an nicer airfoil. This is something to investigate at a later time. Perhaps it's a bug.
 ```python
-from src.airfoil_generator import generate_four_digit_NACA # Add this to imports
+from src.useful import generate_four_digit_NACA # Add this to imports
 
-    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=170, chord_length=1) # Replace this line
+    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length=1) # Replace this line
 ```
-![Vortex-Panel-Method-2412-6-deg-AoA-Unsteady.png](images%2FVortex-Panel-Method-2412-6-deg-AoA-Unsteady.png)
+
+
+<div style="text-align: center;">
+    <img src='images/Vortex-Panel-Method-2412-6-deg-AoA-Unsteady.png'>
+ <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA with a generated airfoil</figcaption>
+</div>
+
+Interestingly, the Cl calculated from CP (effectively the grid velocity)  as well as the lift force from the computed gamma values are still consistent.
+
 
 #### With a lower discretization
 
-![Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png](images%2FVortex-Panel-Method-2412-6-deg-AoA-Low-Res.png)
+
+<div style="text-align: center;">
+    <img src='images/Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png'>
+ <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA with a poorly discritized airfoil</figcaption>
+</div>
 
 ### Source Vortex Panel Method
 
@@ -264,20 +347,117 @@ the first and last panel have the same tangential velocities.
 The results are much more cleaner and can provide a more consistent picture of the lift force even with a poorly discretized airfoil.
 
 ```python
-from src.svpm_funcs import run_source_vortex_panel_method
+from src.panel_methods import run_source_vortex_panel_method
 
 V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
                                                                           V=V, AoA=AoA, x=x, y=y)
 ```
+See [`svpm_Airfoil.py`](examples/svpm_Airfoil.py) for an demonstration of how to use the results.
 
-![Source-Vortex-Panel-Method-2412-6-deg-AoA.png](images%2FSource-Vortex-Panel-Method-2412-6-deg-AoA.png)
+<div style="text-align: center;">
+    <img src='images/Source-Vortex-Panel-Method-2412-6-deg-AoA.png'>
+ <figcaption>Source Vortex Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
+</div>
 
 #### With a lower discretization
 
-![Source-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png](images%2FSource-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png)
+<div style="text-align: center;">
+    <img src='images/Source-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png'>
+ <figcaption>Source Vortex Panel Method for NACA 2412 at 6 degrees AoA with a poorly discritized airfoil</figcaption>
+</div>
 
 Much better (in terms of consistency) than the vortex panel method.
 
+## Multi-Element Airfoil
+
+While single airfoils are nice, they can be improved upon by combining multiple airfoils together.
+IT can be achieved by combing the different panel geometries into one big geometry object and solve with the source vortex
+panel method.
+
+As regard the mathematics, the only differences are:
+- V<sub>n,j</sub> = 0 is computed for each airfoil. (n-1 extra terms)
+- The Kutta condition is satisfied by solving the equation V<sub>t,1</sub> = -V<sub>t,N</sub> for each airfoil. (n-1 extra equations)
+where n is the number of airfoils.
 
 
+```python
+import numpy as np
+from src.code_collections.data_collections import MultiElementAirfoil
+from src.multi_element_airfoil import create_clean_panelized_geometry
+from src.panel_methods import run_source_vortex_panel_method_svpm
+from pathlib import Path
 
+airfoil_directory_path = Path('../Airfoil_DAT_Selig')
+
+X_NEG_LIMIT = -5
+Y_NEG_LIMIT = -5
+X_POS_LIMIT = 5
+Y_POS_LIMIT = 5
+num_grid = 100
+V = 1
+AoA = 0
+
+airfoils = ['0012', '0012', '0012']
+load_NACA = [True, True, True]
+num_points = np.array([251, 251, 251])
+AF_flip = np.array([[1, 1],
+                    [1, 1],
+                    [1, 1]])
+AF_scale = np.array([1, 1, 1])
+AF_angle = np.array([0, 0, 0])
+AF_offset = np.array([[0, 0],
+                      [2, 0],
+                      [4, 0]])
+
+num_airfoils = len(airfoils)
+
+"""                  
+Individual  All               Total
+Geometries  geometries        geometry
+In a list   combined          turned into
+            into a single     panelized
+            geometry object   geometry
+"""     
+multi_element_airfoil = MultiElementAirfoil(airfoils=airfoils, load_NACA=load_NACA, num_points=num_points,
+                                            AF_flip=AF_flip, AF_scale=AF_scale, AF_angle=AF_angle,
+                                            AF_offset=AF_offset)
+
+geometries, total_geometry, total_panelized_geometry_nb = create_clean_panelized_geometry(multi_element_airfoil,
+                                                                                          airfoil_directory_path, AoA)
+
+x, y = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num_grid), np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT,
+                                                                    num_grid)  # Create grid
+
+V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method_svpm(geometries, total_panelized_geometry_nb,
+                                                                               x=x,
+                                                                               y=y,
+                                                                               num_airfoil=num_airfoils,
+                                                                               num_points=num_points,
+                                                                               V=V, AoA=AoA, calc_velocities=True,
+                                                                               use_memmap=True)
+```
+
+Once again, this is the bare minimum to get this working.
+
+See [`svpm_multi_element_airfoil.py`](examples/svpm_multi_element_airfoil.py) for an demonstration the results have been
+manipulated.
+
+<div style="text-align: center;">
+    <img src='images/3-NACA0012-AoA-0.png'>
+ <figcaption>Source Vortex Panel Method for 3 NACA0012 at 0 degrees AoA</figcaption>
+</div>
+
+#### Output
+```text
+Sum of gamma:  -3.2026532784308526e-15
+Sum of lam:  0.007458103858697829
+Chord = Total X Length:  5.0
+Chord =  Sum of Chords  3.0
+CL (Kutta-Joukowski) Unit Chord:   -6.405306556861705e-15
+CL (Kutta-Joukowski) Chord = Total X Length:  -1.281061311372341e-15
+CL (Kutta-Joukowski) Chord =  Sum of Chords  -2.1351021856205684e-15
+Circulation (Evaluated from grid velocities):  3.12944115066216e-15
+CL (Calculated from G):  6.25888230132432e-15
+```
+
+This serves for now will as a reasonable sanity check for the results. Both lambda and gamma are very small, there is no area enclosed Cp graph and the flow field is symmetric about the x-axis.

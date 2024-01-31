@@ -4,8 +4,7 @@ from src.potential_flow import FlowField
 from multiprocessing import freeze_support
 import matplotlib.pyplot as plt
 import random
-from src.code_collections import FlowFieldProperties, Ellipse, EllipseProperties
-from src.useful import compute_ellipse_and_circulation
+
 
 if __name__ == '__main__':
     freeze_support()
@@ -29,46 +28,46 @@ if __name__ == '__main__':
         "CONTOUR_LABELS": True
     }
 
-    # x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS)
-    # y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS)
-    # #
-    # velocity = 10
-    # radius = 1
-    # kappa = 2 * np.pi * velocity * radius ** 2  # Known solution for a cylinder
-    # vortex_strength = 4 * np.pi * velocity * radius  # Known solution for a cylinder
+    x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS)
+    y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS)
     #
-    # alpha = 0 * np.pi / 30  # Angle of attack
-    # u1 = elementary_flows.UniformFlow(horizontal_vel=velocity * np.cos(alpha), vertical_vel=velocity * np.sin(alpha))
-    # v1 = elementary_flows.Vortex(x_pos=0, y_pos=0, circulation=vortex_strength)
-    # d1 = elementary_flows.Doublet(x_pos=0, y_pos=0, kappa=kappa)
-    #
-    # flow = FlowField([v1, d1, u1], **plotting_kwargs)
-    # flow.plot_flow_from_stream_function(x, y)
-    # flow.plot_velocity(x, y)
-    #
-    # # %% Rankine Oval
-    # plotting_kwargs2 = {
-    #     'CONTOR_LEVELS': 50,
-    # }
-    # v1 = elementary_flows.Source(x_pos=-2, y_pos=0, strength=10)
-    # v2 = elementary_flows.Source(x_pos=2, y_pos=0, strength=-10)  # Negative strength is a sink
-    # u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
-    #
-    # flow = FlowField([v1, v2, u1], **plotting_kwargs2)
-    # flow.plot_flow_from_stream_function(x, y).show()
-    # flow.plot_velocity(x, y).show()
-    #
-    # # %% Kelvin's Oval
-    #
-    # plotting_kwargs2 = {
-    #     'CONTOR_LEVELS': 50,
-    # }
-    # v1 = elementary_flows.Vortex(x_pos=0, y_pos=2, circulation=10)
-    # v2 = elementary_flows.Vortex(x_pos=0, y_pos=-2, circulation=-10)
-    # u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
-    # flow = FlowField([v1, v2, u1], **plotting_kwargs2)
-    # flow.plot_flow_from_stream_function(x, y).show()
-    # flow.plot_velocity(x, y).show()
+    velocity = 10
+    radius = 1
+    kappa = 2 * np.pi * velocity * radius ** 2  # Known solution for a cylinder
+    vortex_strength = 4 * np.pi * velocity * radius  # Known solution for a cylinder
+
+    alpha = 0 * np.pi / 30  # Angle of attack
+    u1 = elementary_flows.UniformFlow(horizontal_vel=velocity * np.cos(alpha), vertical_vel=velocity * np.sin(alpha))
+    v1 = elementary_flows.Vortex(x_pos=0, y_pos=0, circulation=vortex_strength)
+    d1 = elementary_flows.Doublet(x_pos=0, y_pos=0, kappa=kappa)
+
+    flow = FlowField([v1, d1, u1], **plotting_kwargs)
+    flow.plot_flow_from_stream_function(x, y)
+    flow.plot_velocity(x, y)
+
+    # %% Rankine Oval
+    plotting_kwargs2 = {
+        'CONTOR_LEVELS': 50,
+    }
+    v1 = elementary_flows.Source(x_pos=-2, y_pos=0, strength=10)
+    v2 = elementary_flows.Source(x_pos=2, y_pos=0, strength=-10)  # Negative strength is a sink
+    u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+
+    flow = FlowField([v1, v2, u1], **plotting_kwargs2)
+    flow.plot_flow_from_stream_function(x, y).show()
+    flow.plot_velocity(x, y).show()
+
+    # %% Kelvin's Oval
+
+    plotting_kwargs2 = {
+        'CONTOR_LEVELS': 50,
+    }
+    v1 = elementary_flows.Vortex(x_pos=0, y_pos=2, circulation=10)
+    v2 = elementary_flows.Vortex(x_pos=0, y_pos=-2, circulation=-10)
+    u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+    flow = FlowField([v1, v2, u1], **plotting_kwargs2)
+    flow.plot_flow_from_stream_function(x, y).show()
+    flow.plot_velocity(x, y).show()
 
     # %% Random flow field to test primitive multiprocessing functionality
     NO_OF_POINTS = 50

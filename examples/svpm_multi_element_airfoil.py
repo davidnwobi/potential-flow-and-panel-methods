@@ -32,17 +32,17 @@ xfoil_usable_airfoil_directory_path = Path('../xfoil_usable')
 # AF_offset = np.array([[0, 0],
 #                       [1.2, 0]])
 
-# airfoils = ['0012', '0012', '0012']
-# load_NACA = [True, True, True]
-# num_points = np.array([151, 151, 151])
-# AF_flip = np.array([[1, 1],
-#                     [1, 1],
-#                     [1, 1]])
-# AF_scale = np.array([1, 1, 1])
-# AF_angle = np.array([0, 0, 0])
-# AF_offset = np.array([[0, 0],
-#                       [2, 0],
-#                       [4, 0]])
+airfoils = ['0012', '0012', '0012']
+load_NACA = [True, True, True]
+num_points = np.array([151, 151, 151])
+AF_flip = np.array([[1, 1],
+                    [1, 1],
+                    [1, 1]])
+AF_scale = np.array([1, 1, 1])
+AF_angle = np.array([0, 0, 0])
+AF_offset = np.array([[0, 0],
+                      [2, 0],
+                      [4, 0]])
 
 
 
@@ -152,25 +152,25 @@ In AIAA SciTech Forum (pp. 1-15). American Institute of Aeronautics and Astronau
 #                                                                                             [0, 0]])
 
 
-airfoils = ['NACA0012M0', 'NACA0012M1', 'NACA0012M2', 'NACA0012M3', 'NACA0012M4']
-load_NACA = [False, False, False, False, False]
-num_points = np.array([100, 100, 100, 100, 100])
-AF_flip = np.array([[1, 1],
-                    [1, 1],
-                    [1, 1],
-                    [1, 1],
-                    [1, 1]])
-AF_scale = np.array([1, 1, 1, 1, 1])
-AF_angle = np.array([28, 14, 0, -14, -28])
-AF_offset = np.loadtxt('../Airfoil_DAT_Selig/offsetsNACA0012MRotated.dat', skiprows=1) + np.array([[0, 0],
-                                                                                                   [0, 0],
-                                                                                                   [0, 0],
-                                                                                                   [0, 0],
-                                                                                                   [0, 0]])
+# airfoils = ['NACA0012M0', 'NACA0012M1', 'NACA0012M2', 'NACA0012M3', 'NACA0012M4']
+# load_NACA = [False, False, False, False, False]
+# num_points = np.array([100, 100, 100, 100, 100])
+# AF_flip = np.array([[1, 1],
+#                     [1, 1],
+#                     [1, 1],
+#                     [1, 1],
+#                     [1, 1]])
+# AF_scale = np.array([1, 1, 1, 1, 1])
+# AF_angle = np.array([28, 14, 0, -14, -28])
+# AF_offset = np.loadtxt('../Airfoil_DAT_Selig/offsetsNACA0012MRotated.dat', skiprows=1) + np.array([[0, 0],
+#                                                                                                    [0, 0],
+#                                                                                                    [0, 0],
+#                                                                                                    [0, 0],
+#                                                                                                    [0, 0]])
 
 
 V = 1
-AoA = 1
+AoA = 0
 num_grid = 100  # This code is really slow, so keep this number low. Max: 400
 X_NEG_LIMIT = -1
 X_POS_LIMIT = 3
