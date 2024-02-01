@@ -4,7 +4,7 @@ from ..code_collections import data_collections as dc
 import numpy as np
 import numba as nb
 
-__all__ = ['run_vortex_panel_method']
+__all__ = ['run_vortex_panel_method', 'compute_grid_velocity_vortex']
 
 @nb.njit(cache=True)
 def compute_vortex_strengths(panelized_geometry, V, K):

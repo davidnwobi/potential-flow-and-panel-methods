@@ -62,9 +62,20 @@ def clean_up_geometry(total_panelized_geometry, num_points):
 
 
 def create_clean_panelized_geometry(multi_element_airfoil, airfoil_directory_path, AoA):
+    """
+    Create a clean panelized geometry for a multi-element airfoil
+
+    Note: The geometries are presented in a clockwise manner hence for the discrete geometries, the order is reversed.
+
+    :param multi_element_airfoil:
+    :param airfoil_directory_path:
+    :param AoA:
+    :return:
+    """
     geometries = setup_multi_element_airfoil(multi_element_airfoil, airfoil_directory_path, AoA=AoA)
     total_geometry = Geometry(np.concatenate([geometry.x for geometry in geometries]), np.concatenate(
         [geometry.y for geometry in geometries]), AoA)
     total_panelized_geometry = PanelGenerator.compute_geometric_quantities(total_geometry)
     total_panelized_geometry = clean_up_geometry(total_panelized_geometry, multi_element_airfoil.num_points)
+    geometries = geometries[::-1]
     return geometries, total_geometry, total_panelized_geometry

@@ -11,50 +11,8 @@ import time as t
 import timeit
 from functools import partial
 
-__all__ = ['compute_grid_geometric_integrals_source_mp']
+__all__ = ['compute_grid_geometric_integrals_source_mp', 'compute_grid_geometric_integrals_vortex_mp']
 
-
-# def compute_grid_geometric_integrals_source_internal(panel_geometry: dc.PanelizedGeometry, grid_x: np.ndarray,
-#                                                      grid_y: np.ndarray, core_idx: int):
-#     """
-#     An internal function to compute the geometric integrals for the source panels.
-#     :param panel_geometry:
-#     :param grid_x:
-#     :param grid_y:
-#     :param core_idx:
-#     :return:
-#     """
-#     print(f'\tGrid Geometric integrals core {core_idx}')
-#     pathlib.Path.unlink(f'Mxpj_{core_idx}.h5', missing_ok=True)
-#     pathlib.Path.unlink(f'Mypj_{core_idx}.h5', missing_ok=True)
-#     Mxpjf = h5py.File(f'Mxpj_{core_idx}.h5', 'w')
-#     Mypjf = h5py.File(f'Mypj_{core_idx}.h5', 'w')
-#     Mxpj = Mxpjf.create_dataset('Mxpj', shape=(grid_y.size, grid_x.size, panel_geometry.S.size), dtype=np.float64)
-#     Mypj = Mypjf.create_dataset('Mypj', shape=(grid_y.size, grid_x.size, panel_geometry.S.size), dtype=np.float64)
-#     X = panel_geometry.xC - panel_geometry.S / 2 * np.cos(panel_geometry.phi)
-#     Y = panel_geometry.yC - panel_geometry.S / 2 * np.sin(panel_geometry.phi)
-#     array_points = product(range(grid_x.size), range(grid_y.size))
-#
-#     for i, j in array_points:
-#         A, B, E = gi.compute_repeating_terms(grid_x[i], grid_y[j], X,
-#                                              Y, panel_geometry.phi)
-#
-#         M_xpj = gi.horizontal_geometric_integral_source(grid_x[i], X, panel_geometry.phi, panel_geometry.S,
-#                                                         A, B, E)
-#         M_ypj = gi.vertical_geometric_integral_source(grid_y[j], Y, panel_geometry.phi, panel_geometry.S,
-#                                                       A, B, E)
-#
-#         del A, B, E
-#         mask_M_xpj = np.where(np.isnan(M_xpj))
-#         mask_M_ypj = np.where(np.isnan(M_ypj))
-#         M_xpj[mask_M_xpj] = 0.
-#         M_ypj[mask_M_ypj] = 0.
-#         M_xpj = np.where(np.isnan(M_xpj) | np.isinf(M_xpj) | np.iscomplex(M_xpj), 0, M_xpj)
-#         M_ypj = np.where(np.isnan(M_ypj) | np.isinf(M_ypj) | np.iscomplex(M_ypj), 0, M_ypj)
-#         Mxpj[j, i], Mypj[j, i] = M_xpj, M_ypj
-#
-#     Mxpjf.close()
-#     Mypjf.close()
 
 def compute_grid_geometric_integrals_source_internal(panel_geometry: dc.PanelizedGeometry, grid_x: np.ndarray,
                                                      grid_y: np.ndarray, core_idx: int):
@@ -113,27 +71,29 @@ def compute_grid_geometric_integrals_vortex_internal(panel_geometry: dc.Panelize
     Nypj = Nypjf.create_dataset('Nypj', shape=(grid_y.size, grid_x.size, panel_geometry.S.size), dtype=np.float64)
     X = panel_geometry.xC - panel_geometry.S / 2 * np.cos(panel_geometry.phi)
     Y = panel_geometry.yC - panel_geometry.S / 2 * np.sin(panel_geometry.phi)
-    array_points = product(range(grid_x.size), range(grid_y.size))
-    for i, j in array_points:
-        A, B, E = gi.compute_repeating_terms(grid_x[i], grid_y[j], X,
-                                             Y, panel_geometry.phi)
-
-        N_xpj = gi.horizontal_geometric_integral_vortex(grid_y[j], Y, panel_geometry.phi, panel_geometry.S,
-                                                        A, B, E)
-        N_ypj = gi.vertical_geometric_integral_vortex(grid_x[i], X, panel_geometry.phi, panel_geometry.S,
-                                                      A, B, E)
-
-        del A, B, E
-        mask_N_xpj = np.where(np.isnan(N_xpj))
-        mask_N_ypj = np.where(np.isnan(N_ypj))
-        N_xpj[mask_N_xpj] = 0.
-        N_ypj[mask_N_ypj] = 0.
-        N_xpj = np.where(np.isnan(N_xpj) | np.isinf(N_xpj) | np.iscomplex(N_xpj), 0, N_xpj)
-        N_ypj = np.where(np.isnan(N_ypj) | np.isinf(N_ypj) | np.iscomplex(N_ypj), 0, N_ypj)
-        Nxpj[j, i], Nypj[j, i] = N_xpj, N_ypj
+    for j in range(len(grid_y)):
+        Nxpj[j, :], Nypj[j, :] = actual_computation_grid_geometric_integrals_vortex(grid_x, grid_y[j],
+                                                                                    panel_geometry.S,
+                                                                                    panel_geometry.phi, X, Y)
 
     Nxpjf.close()
     Nypjf.close()
+
+
+@nb.njit(cache=True)
+def actual_computation_grid_geometric_integrals_vortex(grid_x, grid_y, S, phi, X, Y):
+    N_xpj, N_ypj = np.empty((len(grid_x), len(S)), dtype=float), np.empty((len(grid_x), len(S)), dtype=float)
+    for i in range(grid_x.size):
+        A, B, E = gi.compute_repeating_terms(x_i=grid_x[i], y_i=grid_y, X_j=X, Y_j=Y, phi_j=phi)
+        N_xpj[i, :] = gi.horizontal_geometric_integral_vortex(y_p=grid_y, Y_j=Y, phi_j=phi, S_j=S, A=A, B=B, E=E)
+        N_ypj[i, :] = gi.vertical_geometric_integral_vortex(x_p=grid_x[i], X_j=X, phi_j=phi, S_j=S, A=A, B=B, E=E)
+
+    N_xpj = np.where(np.isnan(N_xpj), 0., N_xpj)
+    N_ypj = np.where(np.isnan(N_ypj), 0., N_ypj)
+
+    M_xpj = np.where(np.isnan(N_xpj) | np.isinf(N_xpj) | np.iscomplex(N_xpj), 0, N_xpj)
+    M_ypj = np.where(np.isnan(N_ypj) | np.isinf(N_ypj) | np.iscomplex(N_ypj), 0, N_ypj)
+    return M_xpj, M_ypj
 
 
 def compute_grid_geometric_integrals_source_mp(panel_geometry: dc.PanelizedGeometry, grid_x: np.ndarray,
