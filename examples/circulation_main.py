@@ -4,7 +4,7 @@ from src.potential_flow import FlowField
 from multiprocessing import freeze_support
 import matplotlib.pyplot as plt
 from src.code_collections import FlowFieldProperties, Ellipse
-from src.useful import compute_ellipse_and_circulation
+from src.util import compute_ellipse_and_circulation
 
 if __name__ == '__main__':
     freeze_support()

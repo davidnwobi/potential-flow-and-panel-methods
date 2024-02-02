@@ -4,7 +4,7 @@ import typing as tp
 import multiprocessing as mp
 from itertools import repeat
 from . import elementary_flows
-from ..useful import plot_flow_from_stream_function, plot_flow_from_velocities
+from ..util import plot_flow_from_stream_function, plot_flow_from_velocities
 
 __all__ = ['FlowField']
 

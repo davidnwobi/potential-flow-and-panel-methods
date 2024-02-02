@@ -112,18 +112,18 @@ from src.potential_flow import FlowField
 </div>
 
 ### Calculating circulation
+
 ```python
 # Add this to imports
 from src.code_collections import FlowFieldProperties, Ellipse
-from src.useful import compute_ellipse_and_circulation
+from src.util import compute_ellipse_and_circulation
 
 if __name__ == '__main__':
-    
     # all of the previous code goes here up to the flow definition
     # Set alpha to 0 to get the same plots here
-    
+
     # Create ellipse and compute circulation
-    X, Y = np.meshgrid(x, y) # Create meshgrid
+    X, Y = np.meshgrid(x, y)  # Create meshgrid
     velocity_field = flow.get_velocity(X, Y)
     # Notice x and y are 1D arrays
     flow_properties = FlowFieldProperties(x, y, velocity_field[0], velocity_field[1])
@@ -245,13 +245,13 @@ With these boundary conditions, the strengths of each panel can be calculated.
 THe first thing you is setup the geometry of the body. How you intend to do this is up to you, but you must provide a numpy array of x and y coordinates.
 
 
-For the rest of this demontration, a NACA 2412 airfoil at an angle of attack of 6 degrees is used. The airfoil was first generated using XFOIL and later using the 'generate_four_digit_NACA' function in [`airfoil_generator.py`](src/useful/airfoil_generator.py).
+For the rest of this demontration, a NACA 2412 airfoil at an angle of attack of 6 degrees is used. The airfoil was first generated using XFOIL and later using the 'generate_four_digit_NACA' function in [`airfoil_generator.py`](src/util/airfoil_generator.py).
 
 ```python 
 
 import numpy as np
 import src.code_collections.data_collections as dc
-from src.useful import PanelGenerator # Anything that does not calculate a panel method almost certainly in here
+from src.util import PanelGenerator  # Anything that does not calculate a panel method almost certainly in here
 
 XB, YB = np.loadtxt('xfoil_usable/naca2412.txt', unpack=True)
 V = 1
@@ -309,10 +309,11 @@ See [`vpm_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to u
 Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
 Even with a well discretized XFOIL generated airfoil, the C<sub>p</sub> value oscillates slightly.
 Now, observe what happens when the same airfoil is generated rather than using an nicer airfoil. This is something to investigate at a later time. Perhaps it's a bug.
-```python
-from src.useful import generate_four_digit_NACA # Add this to imports
 
-    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length=1) # Replace this line
+```python
+from src.util import generate_four_digit_NACA  # Add this to imports
+
+XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length=1)  # Replace this line
 ```
 
 

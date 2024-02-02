@@ -4,7 +4,7 @@ from ..code_collections import data_collections as dc
 import numpy as np
 from joblib import Parallel, delayed
 
-__all__ = ['run_source_vortex_panel_method']
+__all__ = ['run_source_vortex_panel_method', 'compute_grid_velocity_source_vortex', 'compute_source_vortex_strengths', 'compute_panel_velocities_source_vortex']
 
 
 def compute_source_vortex_strengths(panelized_geometry, V, I, J, K, L):
@@ -51,8 +51,8 @@ def compute_grid_velocity_source_vortex(panelized_geometry, x, y, lam, gamma, fr
     X = np.append(X, X[0])
     Y = np.append(Y, Y[0])
     shape = np.vstack((X, Y)).T
-    u = np.zeros((len(x), len(y)))
-    v = np.zeros((len(x), len(y)))
+    u = np.zeros((len(y), len(x)))
+    v = np.zeros((len(y), len(x)))
     for i in range(len(x)):
         for j in range(len(y)):
             if point_in_polygon(float(x[i]), float(y[j]), shape):
@@ -71,6 +71,7 @@ def run_source_vortex_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V
     I, J = gi.compute_panel_geometric_integrals_source_nb(panelized_geometry)
     K, L = gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
     lam, gamma = compute_source_vortex_strengths(panelized_geometry, V, I, J, K, L)
+
     V_normal, V_tangential = compute_panel_velocities_source_vortex(panelized_geometry, lam, gamma, V, I, J, K, L)
 
     u, v = compute_grid_velocity_source_vortex(panelized_geometry, x, y, lam, gamma, V, AoA)

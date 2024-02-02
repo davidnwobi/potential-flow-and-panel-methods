@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.colors as colors
 from matplotlib import ticker
-from src.useful import PanelGenerator
-from src.useful import compute_ellipse_and_circulation
+from src.util import PanelGenerator
+from src.util import compute_ellipse_and_circulation
 from src.panel_methods import *
-from src.useful import interpolator
+from src.util import interpolator
 from src.code_collections import data_collections as dc
 from aeropy import xfoil_module as xf
 import numpy as np

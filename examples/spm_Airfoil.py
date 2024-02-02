@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
-from src.useful import PanelGenerator
-from src.useful import compute_ellipse_and_circulation
+from src.util import PanelGenerator
+from src.util import compute_ellipse_and_circulation
 from src.panel_methods import *
 from src.code_collections import data_collections as dc
-from src.useful import generate_four_digit_NACA
+from src.util import generate_four_digit_NACA
 from aeropy import xfoil_module as xf
 from pathlib import Path
 import numpy as np

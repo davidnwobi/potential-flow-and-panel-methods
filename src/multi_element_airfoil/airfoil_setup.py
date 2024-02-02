@@ -1,7 +1,7 @@
-from ..useful import interpolator
-from ..useful import generate_four_digit_NACA
+from ..util import interpolator
+from ..util import generate_four_digit_NACA
 from ..code_collections import Geometry, MultiElementAirfoil
-from ..useful import PanelGenerator
+from ..util import PanelGenerator
 import numpy as np
 from pathlib import Path
 import typing as tp

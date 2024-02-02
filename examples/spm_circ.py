@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from src.useful import PanelGenerator
+from src.util import PanelGenerator
 from src.panel_methods import run_source_panel_method
 import src.code_collections.data_collections as dc
 import numpy as np

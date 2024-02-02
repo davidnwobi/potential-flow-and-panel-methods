@@ -138,6 +138,8 @@ def run_source_vortex_panel_method_svpm(discrete_geometries, panelized_geometry:
 
         print('Finished computing panel velocities')
         print('-' * 80)
+        from time import time
+        time1 = time()
         if calc_velocities:
             print('Beginning to compute grid velocities')
             if use_memmap:
@@ -153,7 +155,8 @@ def run_source_vortex_panel_method_svpm(discrete_geometries, panelized_geometry:
 
         else:
             u, v = np.zeros((len(x), len(y))), np.zeros((len(x), len(y)))
-
+        time2 = time()
+        print(f'Elapsed time: {time2 - time1}')
         panel_results = dc.SourceVortexPanelMethodResults(V_normal=V_normal, V_tangential=V_tangential,
                                                           Source_Strengths=lam, Circulation=gamma, V_horizontal=u,
                                                           V_vertical=v)

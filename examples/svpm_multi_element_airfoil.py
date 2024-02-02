@@ -2,9 +2,9 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 from src.code_collections import Geometry, MultiElementAirfoil, Ellipse, FlowFieldProperties
-from src.useful import compute_ellipse_and_circulation
+from src.util import compute_ellipse_and_circulation
 from src.multi_element_airfoil import create_clean_panelized_geometry
-from src.useful import PanelGenerator
+from src.util import PanelGenerator
 from src.panel_methods import run_source_vortex_panel_method_svpm
 from matplotlib import colors, ticker
 import warnings
