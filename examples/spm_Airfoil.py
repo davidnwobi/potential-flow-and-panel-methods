@@ -25,14 +25,14 @@ try:
     If you set NACA=True, then the airfoil is generated using the NACA four digit series so only pass in the 'naca' + four digit series
     If you set NACA=False, then the airfoil is loaded from a file so pass in the location of the file
     """
-    res = xf.find_pressure_coefficients(airfoil=loc, alpha=AoA, NACA=False, delete=True)
-    x_foil_cl = xf.find_coefficients(airfoil=loc, alpha=AoA, NACA=False, delete=True)['CL']
+    res = xf.find_pressure_coefficients(airfoil=loc, alpha=AoA, NACA=True, delete=True)
+    x_foil_cl = xf.find_coefficients(airfoil=loc, alpha=AoA, NACA=True, delete=True)['CL']
     xfoil_cp = pd.DataFrame(res)
     xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
     xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]
 except:
     print('XFOIL Error')
-    res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, )
+    res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, delete=True)
     xfoil_cp = pd.DataFrame(res)
     xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
     xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]

@@ -4,8 +4,8 @@ from itertools import product
 import pathlib
 import tqdm
 from joblib import Parallel, delayed
-from ..code_collections import data_collections as dc
-from . import geometric_integrals as gi
+from .. import utils as gi
+from ...code_collections import data_collections as dc
 import numba as nb
 import time as t
 import timeit

@@ -1,8 +1,7 @@
 from . import parallel_geometric_integrals as pgi
-from .spm_funcs import point_in_polygon
-from . import geometric_integrals as gi
-from ..code_collections import data_collections as dc
-from .multi_element_svpm_funcs import compute_panel, compute_panel_velocities_source_vortex_nb
+from ..utils import point_in_polygon
+from ...code_collections import data_collections as dc
+from ..multi_svpm.multi_element_svpm_funcs import compute_panel, compute_panel_velocities_source_vortex_nb
 import numpy as np
 import h5py
 import numba as nb

@@ -281,3 +281,23 @@ def compute_grid_geometric_integrals_vortex(panel_geometry: dc.PanelizedGeometry
         del N_xpj, N_ypj
 
     return Nxpj, Nypj
+
+
+@nb.njit(cache=True)
+def point_in_polygon(x: float, y: float, polygon: np.ndarray) -> bool:
+    n = len(polygon)
+    inside = False
+
+    x1, y1 = polygon[0]
+    for i in range(n + 1):
+        x2, y2 = polygon[i % n]
+        if y > min(y1, y2):
+            if y <= max(y1, y2):
+                if x <= max(x1, x2):
+                    if y1 != y2:
+                        x_intersect = (y - y1) * (x2 - x1) / (y2 - y1) + x1
+                        if x1 == x2 or x <= x_intersect:
+                            inside = not inside
+        x1, y1 = x2, y2
+
+    return inside

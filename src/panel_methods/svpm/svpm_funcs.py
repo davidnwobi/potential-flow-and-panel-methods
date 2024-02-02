@@ -1,8 +1,7 @@
-from . import geometric_integrals as gi
-from .spm_funcs import point_in_polygon
-from ..code_collections import data_collections as dc
+from .. import utils as gi
+from ..utils import point_in_polygon
+from ...code_collections import data_collections as dc
 import numpy as np
-from joblib import Parallel, delayed
 
 __all__ = ['run_source_vortex_panel_method', 'compute_grid_velocity_source_vortex', 'compute_source_vortex_strengths', 'compute_panel_velocities_source_vortex']
 

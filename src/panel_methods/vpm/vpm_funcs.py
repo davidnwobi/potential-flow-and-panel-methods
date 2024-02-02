@@ -1,6 +1,6 @@
-from . import geometric_integrals as gi
-from .spm_funcs import point_in_polygon
-from ..code_collections import data_collections as dc
+from .. import utils as gi
+from ..utils import point_in_polygon
+from ...code_collections import data_collections as dc
 import numpy as np
 import numba as nb
 
