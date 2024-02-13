@@ -5,10 +5,10 @@ This project is a collection of tools for visualizing and solving potential flow
 It provides tools that allows you to do simple things like :
 
 
-<div style="text-align: center;">
+<figure style="text-align: center;">
     <img src='images/ContorPlot.png' width='600'>
  <figcaption>Lifting flow over a cylinder at 6 degrees AoA</figcaption>
-</div>
+</figure>
 
 
 
@@ -17,10 +17,10 @@ and more complex things like this:
 
 
 
-<div style="text-align: center;">
+<figure style="text-align: center;">
     <img src='images/MultiElementSolution.png'>
  <figcaption>Source Vortex Panel Method for Slotted NACA0012 at 8 degrees AoA</figcaption>
-</div>
+</figure>
 
 
 and... (eventually) do them as fast as possible.
