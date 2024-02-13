@@ -269,9 +269,9 @@ The airfoil is modelled as a collection of source panels whose strengths are con
 Only the first boundary condition can be solved since there is no circulation. V<sub>n,j</sub> = 0 is the equation solved for all panels.
 
 ```python
-from src.panel_methods import run_source_panel_method
+from src.panel_methods.spm import run_panel_method
 
-V_normal, V_tangential, lam, u, v = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
+V_normal, V_tangential, lam, u, v = run_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
                                                             x=x, y=y)
 ```
 With this, you are free to do whatever you want with the results. See [`spm_Airfoil.py`](examples/spm_Airfoil.py) for an demonstration of how to use the results.
@@ -294,7 +294,7 @@ The Kutta condition is satisfied by replacing an equation in the system of equat
 As for the code, it is the same as the source panel method except for the function call.
 
 ```python
-from src.panel_methods import run_panel_method
+from src.panel_methods.vpm import run_panel_method
 
 V_normal, V_tangential, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
                                                        x=x, y=y)
@@ -348,9 +348,9 @@ the first and last panel have the same tangential velocities.
 The results are much more cleaner and can provide a more consistent picture of the lift force even with a poorly discretized airfoil.
 
 ```python
-from src.panel_methods import run_source_vortex_panel_method
+from src.panel_methods.svpm import run_panel_method
 
-V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
+V_normal, V_tangential, lam, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry,
                                                                           V=V, AoA=AoA, x=x, y=y)
 ```
 See [`svpm_Airfoil.py`](examples/svpm_Airfoil.py) for an demonstration of how to use the results.
@@ -385,7 +385,7 @@ where n is the number of airfoils.
 import numpy as np
 from src.code_collections.data_collections import MultiElementAirfoil
 from src.multi_element_airfoil import create_clean_panelized_geometry
-from src.panel_methods import run_source_vortex_panel_method_svpm
+from src.panel_methods.multi_svpm import  run_panel_method
 from pathlib import Path
 
 airfoil_directory_path = Path('../Airfoil_DAT_Selig')
@@ -426,10 +426,11 @@ multi_element_airfoil = MultiElementAirfoil(airfoils=airfoils, load_NACA=load_NA
 geometries, total_geometry, total_panelized_geometry_nb = create_clean_panelized_geometry(multi_element_airfoil,
                                                                                           airfoil_directory_path, AoA)
 
+
 x, y = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num_grid), np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT,
                                                                     num_grid)  # Create grid
 
-V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method_svpm(geometries, total_panelized_geometry_nb,
+V_normal, V_tangential, lam, gamma, u, v = run_panel_method(geometries, total_panelized_geometry_nb,
                                                                                x=x,
                                                                                y=y,
                                                                                num_airfoil=num_airfoils,
@@ -462,3 +463,24 @@ CL (Calculated from G):  6.25888230132432e-15
 ```
 
 This serves for now will as a reasonable sanity check for the results. Both lambda and gamma are very small, there is no area enclosed Cp graph and the flow field is symmetric about the x-axis.
+
+
+## Parallel Implementation
+
+To further speed up the computation, a parallel implementation of the source-vortex panel method is provided. This is only available for the multi-element airfoil case. Along side this, a memory map may be used to store the intermediate results.
+It is set true by default.
+This is becomes useful when calculating large grids. Likely because of the new bottleneck from this, creating more processes than the number of physical cores available seems to provide a notable speedup for exceedingly large grids (although that is well outside scope of this project).
+
+```python
+from src.panel_methods.p_multi_svpm import run_panel_method
+
+njobs = 4  # Number of cores to use
+
+V_normal, V_tangential, lam, gamma, u, v = run_panel_method(geometries, total_panelized_geometry,
+                                                            x=x,
+                                                            y=y,
+                                                            num_airfoil=num_airfoils,
+                                                            num_points=num_points,
+                                                            V=V, AoA=AoA, calc_velocities=True,
+                                                            use_memmap=True, num_cores=njobs)
+```
