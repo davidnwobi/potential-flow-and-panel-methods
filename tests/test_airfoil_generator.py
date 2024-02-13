@@ -1,4 +1,4 @@
-from src.useful import generate_four_digit_NACA
+from src.util import generate_four_digit_NACA
 from scipy import stats
 import numpy as np
 

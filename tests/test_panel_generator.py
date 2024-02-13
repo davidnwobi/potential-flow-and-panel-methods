@@ -1,8 +1,8 @@
 import copy
-from src.useful import PanelGenerator
+from src.util import PanelGenerator
 from src.code_collections.data_collections import Geometry
-from src.useful import plot_panelized_geometry
-from src.useful import generate_four_digit_NACA
+from src.util import plot_panelized_geometry
+from src.util import generate_four_digit_NACA
 import numpy as np
 import pytest
 

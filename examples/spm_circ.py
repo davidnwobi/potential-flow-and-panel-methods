@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-from src.useful import PanelGenerator
-from src.panel_methods import run_source_panel_method
+from src.util import PanelGenerator
+from src.panel_methods.spm import run_panel_method
 import src.code_collections.data_collections as dc
 import numpy as np
 import pandas as pd
@@ -32,7 +32,7 @@ YB = np.sin(theta) * radius  # Y value of boundary points
 geometry = dc.Geometry(x=XB, y=YB, AoA=AoA)
 panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry=geometry)
 # %% Actual Computation
-panel_methods_result = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA, x=x, y=y)
+panel_methods_result = run_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA, x=x, y=y)
 V_normal, V_tangential, lam, u, v = panel_methods_result
 
 # %% Manipulate Results

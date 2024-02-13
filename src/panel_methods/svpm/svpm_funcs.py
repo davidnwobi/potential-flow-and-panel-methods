@@ -1,10 +1,8 @@
-from . import geometric_integrals as gi
-from .spm_funcs import point_in_polygon
-from ..code_collections import data_collections as dc
+from ..spm import spm_geometric_integrals as spm_gi
+from ..vpm import vpm_geometric_integrals as vpm_gi
+from ..utils import point_in_polygon
+from ...code_collections import data_collections as dc
 import numpy as np
-from joblib import Parallel, delayed
-
-__all__ = ['run_source_vortex_panel_method']
 
 
 def compute_source_vortex_strengths(panelized_geometry, V, I, J, K, L):
@@ -30,7 +28,7 @@ def compute_source_vortex_strengths(panelized_geometry, V, I, J, K, L):
     return lam, gamma
 
 
-def compute_panel_velocities_source_vortex(panelized_geometry, lam, gamma, V, I, J, K, L):
+def compute_panel_velocities(panelized_geometry, lam, gamma, V, I, J, K, L):
     V_normal = np.empty(len(panelized_geometry.xC))
     V_tangential = np.empty(len(panelized_geometry.xC))
     for i in range(len(panelized_geometry.xC)):
@@ -43,16 +41,16 @@ def compute_panel_velocities_source_vortex(panelized_geometry, lam, gamma, V, I,
     return V_normal, V_tangential
 
 
-def compute_grid_velocity_source_vortex(panelized_geometry, x, y, lam, gamma, free_stream_velocity=1, AoA=0):
-    Mxpj, Mypj = gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
-    Nxpj, Nypj = gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
+def compute_grid_velocity(panelized_geometry, x, y, lam, gamma, free_stream_velocity=1, AoA=0):
+    Mxpj, Mypj = spm_gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
+    Nxpj, Nypj = vpm_gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
     X = np.append(X, X[0])
     Y = np.append(Y, Y[0])
     shape = np.vstack((X, Y)).T
-    u = np.zeros((len(x), len(y)))
-    v = np.zeros((len(x), len(y)))
+    u = np.zeros((len(y), len(x)))
+    v = np.zeros((len(y), len(x)))
     for i in range(len(x)):
         for j in range(len(y)):
             if point_in_polygon(float(x[i]), float(y[j]), shape):
@@ -66,14 +64,15 @@ def compute_grid_velocity_source_vortex(panelized_geometry, x, y, lam, gamma, fr
     return u, v
 
 
-def run_source_vortex_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
-                                   y) -> dc.SourceVortexPanelMethodResults:
-    I, J = gi.compute_panel_geometric_integrals_source_nb(panelized_geometry)
-    K, L = gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
+def run_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
+                     y) -> dc.SourceVortexPanelMethodResults:
+    I, J = spm_gi.compute_panel_geometric_integrals_source_nb(panelized_geometry)
+    K, L = vpm_gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
     lam, gamma = compute_source_vortex_strengths(panelized_geometry, V, I, J, K, L)
-    V_normal, V_tangential = compute_panel_velocities_source_vortex(panelized_geometry, lam, gamma, V, I, J, K, L)
 
-    u, v = compute_grid_velocity_source_vortex(panelized_geometry, x, y, lam, gamma, V, AoA)
+    V_normal, V_tangential = compute_panel_velocities(panelized_geometry, lam, gamma, V, I, J, K, L)
+
+    u, v = compute_grid_velocity(panelized_geometry, x, y, lam, gamma, V, AoA)
 
     panel_results = dc.SourceVortexPanelMethodResults(V_normal=V_normal, V_tangential=V_tangential,
                                                       Source_Strengths=lam, Circulation=gamma, V_horizontal=u,

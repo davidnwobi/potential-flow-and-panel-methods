@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from src.code_collections import Geometry
-from src.useful import PanelGenerator
-from src.useful import plot_panelized_geometry
-from src.useful import generate_four_digit_NACA
+from src.util import PanelGenerator
+from src.util import plot_panelized_geometry
+from src.util import generate_four_digit_NACA
 
 numB = 9  # Number of boundary points
 tO = 22.5  # Angle offset [deg]

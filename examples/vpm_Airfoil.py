@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.colors as colors
 from matplotlib import ticker
-from src.useful import PanelGenerator
-from src.useful import compute_ellipse_and_circulation
-from src.panel_methods import *
+from src.util import PanelGenerator
+from src.util import compute_ellipse_and_circulation
+from src.panel_methods.vpm import run_panel_method
 from src.code_collections import data_collections as dc
-from src.useful import generate_four_digit_NACA
+from src.util import generate_four_digit_NACA
 from aeropy import xfoil_module as xf
 import numpy as np
 import pandas as pd
@@ -33,7 +33,7 @@ try:
     xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]
 except:
     print('XFOIL Error')
-    res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, )
+    res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, delete=True)
     xfoil_cp = pd.DataFrame(res)
     xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
     xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]
@@ -64,7 +64,7 @@ panel_normal_vector_X = panelized_geometry.xC + panelized_geometry.S / 2 * np.co
 panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
 # %% ACTUAL VORTEX PANEL COMPUTATION
-V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry=panelized_geometry,
+V_normal, V_tangential, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry,
                                                               V=V, AoA=AoA, x=x, y=y)
 
 # %% Sanity Check
