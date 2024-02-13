@@ -98,18 +98,18 @@ from src.potential_flow import FlowField
 
 ### Result
 ### Streamline Contour Plot
-<div style="text-align: center;">
+<figure>
     <img src='images/ContorPlot.png' width='600'>
- <figcaption>ifting flow over a cylinder at 6 degrees AoA: Streamline Contours </figcaption>
-</div>
+ <figcaption>Lifting flow over a cylinder at 6 degrees AoA: Streamline Contours </figcaption>
+</figure>
 
 
 ### StreamPlot from Velocity
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Velocity.png' width='600'>
- <figcaption>ifting flow over a cylinder at 6 degrees AoA: Streamplot </figcaption>
-</div>
+ <figcaption>Lifting flow over a cylinder at 6 degrees AoA: Streamplot </figcaption>
+</figure>
 
 ### Calculating circulation
 
@@ -142,10 +142,10 @@ if __name__ == '__main__':
 
 #### Ellipse enclosing the vortex
 
-<div style="text-align: center;">
+<figure>
     <img src='images/CirculationRegion1.png' width='600'>
      <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Enclosing the vortex </figcaption>
-</div>
+</figure>
 
 Output:
 ```text
@@ -153,10 +153,10 @@ circulation: 125.66287765465529
 ```
 
 #### Ellipse not enclosing the vortex
-<div style="text-align: center;">
+<figure>
     <img src='images/CirculationRegion2.png' width='600'>
         <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Not enclosing the vortex </figcaption>
-</div>
+</figure>
 
 Output:
 ```text
@@ -183,17 +183,17 @@ flow.plot_velocity(x, y).show()
 #### Streamline Contour Plot
 
 Streamline Contour Plot
-<div style="text-align: center;">
+<figure>
     <img src='images/StremalinesRakineOval.png' width='600'>
     <figcaption>Rankine Oval: Streamline Contours </figcaption>
-</div>
+</figure>
 
 #### StreamPlot from Velocity
 
-<div style="text-align: center;">
+<figure>
     <img src='images/StreamPlotRankineOval.png' width='600'>
     <figcaption>Rankine Oval: Streamplot </figcaption>
-</div>
+</figure>
 
 
 
@@ -218,17 +218,17 @@ flow.plot_velocity(x, y).show()
 ### Result
 #### Streamline Contour Plot
 
-<div style="text-align: center;">
+<figure>
     <img src='images/StreamLinesKelvinOval.png' width='600'>
     <figcaption>Kelvin Oval: Streamline Contours </figcaption>
-</div>
+</figure>
 
 #### StreamPlot from Velocity
 
-<div style="text-align: center;">
+<figure>
     <img src='images/StreamPlotKelvinOval.png' width='600'>
     <figcaption>Kelvin Oval: Streamplot </figcaption>
-</div>
+</figure>
 
 
 # Panel Methods
@@ -279,10 +279,10 @@ With this, you are free to do whatever you want with the results. See [`spm_Airf
 Note: lam is the strength of the source panels. It is a numpy array of length N where N is the number of panels.
 
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Source-Panel-Method-2412-6-deg-AoA.png'>
  <figcaption>Source Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
-</div>
+</figure>
 
 ### Vortex Panel Method
 
@@ -301,10 +301,10 @@ V_normal, V_tangential, gamma, u, v = run_panel_method(panelized_geometry=paneli
 ```
 See [`vpm_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to use the results.
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Vortex-Panel-Method-2412-6-deg-AoA.png'>
  <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
-</div>
+</figure>
 
 Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
 Even with a well discretized XFOIL generated airfoil, the C<sub>p</sub> value oscillates slightly.
@@ -317,10 +317,10 @@ XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length
 ```
 
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Vortex-Panel-Method-2412-6-deg-AoA-Unsteady.png'>
  <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA with a generated airfoil</figcaption>
-</div>
+</figure>
 
 Interestingly, the Cl calculated from CP (effectively the grid velocity)  as well as the lift force from the computed gamma values are still consistent.
 
@@ -328,10 +328,10 @@ Interestingly, the Cl calculated from CP (effectively the grid velocity)  as wel
 #### With a lower discretization
 
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png'>
  <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA with a poorly discritized airfoil</figcaption>
-</div>
+</figure>
 
 ### Source Vortex Panel Method
 
@@ -355,17 +355,17 @@ V_normal, V_tangential, lam, gamma, u, v = run_panel_method(panelized_geometry=p
 ```
 See [`svpm_Airfoil.py`](examples/svpm_Airfoil.py) for an demonstration of how to use the results.
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Source-Vortex-Panel-Method-2412-6-deg-AoA.png'>
  <figcaption>Source Vortex Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
-</div>
+</figure>
 
 #### With a lower discretization
 
-<div style="text-align: center;">
+<figure>
     <img src='images/Source-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png'>
  <figcaption>Source Vortex Panel Method for NACA 2412 at 6 degrees AoA with a poorly discritized airfoil</figcaption>
-</div>
+</figure>
 
 Much better (in terms of consistency) than the vortex panel method.
 
@@ -444,10 +444,10 @@ Once again, this is the bare minimum to get this working.
 See [`svpm_multi_element_airfoil.py`](examples/svpm_multi_element_airfoil.py) for an demonstration the results have been
 manipulated.
 
-<div style="text-align: center;">
+<figure>
     <img src='images/3-NACA0012-AoA-0.png'>
  <figcaption>Source Vortex Panel Method for 3 NACA0012 at 0 degrees AoA</figcaption>
-</div>
+</figure>
 
 #### Output
 ```text
