@@ -4,7 +4,7 @@ This project is a collection of tools for visualizing and solving potential flow
 
 It provides tools that allows you to do simple things like :
 
-<figure style="text-align: center;">
+<figure>
     <img src='images/ContorPlot.png' width='600', class="center">
  <figcaption>Lifting flow over a cylinder at 6 degrees AoA</figcaption>
 </figure>
