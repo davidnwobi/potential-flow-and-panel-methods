@@ -4,7 +4,7 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 from src.util import PanelGenerator
 from src.util import compute_ellipse_and_circulation
-from src.panel_methods import *
+from src.panel_methods.spm import run_panel_method
 from src.code_collections import data_collections as dc
 from src.util import generate_four_digit_NACA
 from aeropy import xfoil_module as xf
@@ -67,8 +67,8 @@ panel_normal_vector_X = panelized_geometry.xC + panelized_geometry.S / 2 * np.co
 panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
 # %% SOURCE PANEL METHOD
-V_normal, V_tangential, lam, u, v = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
-                                                            x=x, y=y)
+V_normal, V_tangential, lam, u, v = run_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
+                                                     x=x, y=y)
 sumLambda = np.sum(lam * panelized_geometry.S)
 print(f'Sum of Source Strengths: {sumLambda}')
 

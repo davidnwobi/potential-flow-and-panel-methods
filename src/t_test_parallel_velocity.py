@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 from src.code_collections import Geometry, MultiElementAirfoil, Ellipse, FlowFieldProperties, PanelizedGeometry
 from src.util import compute_ellipse_and_circulation
 from src.multi_element_airfoil import create_clean_panelized_geometry
-from src.panel_methods import compute_grid_velocity_source_vortex_mp, compute_grid_velocity_source_vortex, \
-    run_source_vortex_panel_method_svpm, run_source_vortex_panel_method_svpm_mp
-
+from src.panel_methods.p_multi_svpm.parallel_multi_element_svpm_funcs import run_panel_method
 from src.util import PanelGenerator
 from matplotlib import colors, ticker
 from matplotlib.gridspec import GridSpec
@@ -18,7 +16,7 @@ xfoil_usable_airfoil_directory_path = Path('../../xfoil_usable')
 
 airfoils = ['0012']
 load_NACA = [True]
-num_points = np.array([111])
+num_points = np.array([811])
 AF_flip = np.array([[1, 1]])
 AF_scale = np.array([1])
 AF_angle = np.array([0])
@@ -60,15 +58,15 @@ n_jobs = 24
 #     V=V, AoA=AoA,
 #     calc_velocities=True)
 
-V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method_svpm_mp(geometries,
-                                                                                  total_panelized_geometry_nb,
-                                                                                  x=x,
-                                                                                  y=y,
-                                                                                  num_airfoil=num_airfoils,
-                                                                                  num_points=num_points,
-                                                                                  V=V, AoA=AoA,
-                                                                                  calc_velocities=True, use_memmap=True,
-                                                                                  num_cores=n_jobs)
+V_normal, V_tangential, lam, gamma, u, v = run_panel_method(geometries,
+                                                            total_panelized_geometry_nb,
+                                                            x=x,
+                                                            y=y,
+                                                            num_airfoil=num_airfoils,
+                                                            num_points=num_points,
+                                                            V=V, AoA=AoA,
+                                                            calc_velocities=True, use_memmap=True,
+                                                            num_cores=n_jobs)
 # print('u_bench: ')
 # print(u_bench)
 # print('u: ')

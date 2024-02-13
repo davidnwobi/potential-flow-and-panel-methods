@@ -1,19 +1,20 @@
 import numpy as np
+from ..spm import spm_geometric_integrals as spm_gi
+from ..vpm import vpm_geometric_integrals as vpm_gi
 from ..utils import point_in_polygon
-from .. import utils as gi
 from ...code_collections import data_collections as dc
 from ...multi_element_airfoil.airfoil_setup import create_clean_panelized_geometry
 import numba as nb
 import tqdm
 from itertools import product
 
-__all__ = ['run_source_vortex_panel_method_svpm', 'compute_cl_svpm']
+__all__ = ['run_panel_method', 'compute_cl_svpm']
 
 
 @nb.njit(cache=True)
-def compute_multi_element_source_vortex_strengths_nb(panelized_geometry: dc.PanelizedGeometryNb, V: float, I: np.ndarray,
-                                                     J: np.ndarray, K: np.ndarray, L: np.ndarray, k_start: np.ndarray,
-                                                     k_end: np.ndarray, num_airfoils: int, num_points: int):
+def compute_source_vortex_strengths_nb(panelized_geometry: dc.PanelizedGeometryNb, V: float, I: np.ndarray,
+                                       J: np.ndarray, K: np.ndarray, L: np.ndarray, k_start: np.ndarray,
+                                       k_end: np.ndarray, num_airfoils: int, num_points: int):
     np.fill_diagonal(I, np.pi)
     np.fill_diagonal(J, 0)
     np.fill_diagonal(K, 0)
@@ -58,10 +59,10 @@ def compute_multi_element_source_vortex_strengths_nb(panelized_geometry: dc.Pane
 
 
 @nb.njit(cache=True)
-def compute_multi_element_grid_velocity_svpm_nb(discrete_geometries, panelized_geometry, x, y, lam, gamma,
-                                                free_stream_velocity=1, AoA=0):
-    Mxpj, Mypj = gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
-    Nxpj, Nypj = gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
+def compute_grid_velocity_svpm_nb(discrete_geometries, panelized_geometry, x, y, lam, gamma,
+                                  free_stream_velocity=1, AoA=0):
+    Mxpj, Mypj = spm_gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
+    Nxpj, Nypj = vpm_gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
 
     shapes = [np.vstack((geometry.x, geometry.y)).T for geometry in discrete_geometries]
     u = np.zeros((len(x), len(y)))
@@ -82,7 +83,7 @@ def compute_multi_element_grid_velocity_svpm_nb(discrete_geometries, panelized_g
 
 
 @nb.njit(cache=True)
-def compute_panel_velocities_source_vortex_nb(panelized_geometry, lam, gamma, V, I, J, K, L):
+def compute_panel_velocities_nb(panelized_geometry, lam, gamma, V, I, J, K, L):
     V_normal = np.empty(len(panelized_geometry.xC))
     V_tangential = np.empty(len(panelized_geometry.xC))
 
@@ -94,12 +95,12 @@ def compute_panel_velocities_source_vortex_nb(panelized_geometry, lam, gamma, V,
     return V_normal, V_tangential
 
 
-def compute_multi_element_grid_velocity_svpm(discrete_geometries, panelized_geometry, x, y, lam, gamma,
-                                             free_stream_velocity=1, AoA=0):
+def compute_grid_velocity(discrete_geometries, panelized_geometry, x, y, lam, gamma,
+                          free_stream_velocity=1, AoA=0):
     print('\t' + '-' * 60)
-    Mxpj, Mypj = gi.compute_grid_geometric_integrals_source(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
+    Mxpj, Mypj = spm_gi.compute_grid_geometric_integrals_source(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
     print('\t' + '-' * 60)
-    Nxpj, Nypj = gi.compute_grid_geometric_integrals_vortex(panelized_geometry, x, y)
+    Nxpj, Nypj = vpm_gi.compute_grid_geometric_integrals_vortex(panelized_geometry, x, y)
     print('-' * 64)
     print('Grid velocities')
     shapes = [np.vstack((geometry.x, geometry.y)).T for geometry in discrete_geometries]
@@ -124,17 +125,17 @@ def compute_multi_element_grid_velocity_svpm(discrete_geometries, panelized_geom
     return u, v
 
 
-def run_source_vortex_panel_method_svpm(discrete_geometries, panelized_geometry: dc.PanelizedGeometryNb, x: np.ndarray,
-                                        y: np.ndarray, num_airfoil: int, num_points, V: float, AoA: float,
-                                        calc_velocities=True,
-                                        use_memmap=False):
+def run_panel_method(discrete_geometries, panelized_geometry: dc.PanelizedGeometryNb, x: np.ndarray,
+                     y: np.ndarray, num_airfoil: int, num_points, V: float, AoA: float,
+                     calc_velocities=True,
+                     use_memmap=False):
     try:
         I, J, K, L, lam, gamma = compute_panel(discrete_geometries, panelized_geometry, num_airfoil, num_points, V, AoA)
         print('Finished computing source vortex strengths')
         print('-' * 80)
         print('Beginning to compute panel velocities')
-        V_normal, V_tangential = compute_panel_velocities_source_vortex_nb(panelized_geometry, lam, gamma, V, I, J, K,
-                                                                           L)
+        V_normal, V_tangential = compute_panel_velocities_nb(panelized_geometry, lam, gamma, V, I, J, K,
+                                                             L)
 
         print('Finished computing panel velocities')
         print('-' * 80)
@@ -143,14 +144,14 @@ def run_source_vortex_panel_method_svpm(discrete_geometries, panelized_geometry:
         if calc_velocities:
             print('Beginning to compute grid velocities')
             if use_memmap:
-                u, v = compute_multi_element_grid_velocity_svpm(discrete_geometries, panelized_geometry, x, y, lam,
-                                                                gamma,
-                                                                V,
-                                                                AoA)
+                u, v = compute_grid_velocity(discrete_geometries, panelized_geometry, x, y, lam,
+                                             gamma,
+                                             V,
+                                             AoA)
             else:
-                u, v = compute_multi_element_grid_velocity_svpm_nb(discrete_geometries, panelized_geometry, x, y, lam,
-                                                                   gamma, V,
-                                                                   AoA)
+                u, v = compute_grid_velocity_svpm_nb(discrete_geometries, panelized_geometry, x, y, lam,
+                                                     gamma, V,
+                                                     AoA)
             print('-' * 80)
 
         else:
@@ -171,13 +172,13 @@ def compute_panel(discrete_geometries, panelized_geometry: dc.PanelizedGeometryN
     k_end = np.cumsum(num_points - 1) - 1
     print('-' * 80)
     print('Beginning to compute geometric integrals')
-    I, J = gi.compute_panel_geometric_integrals_source_nb(panelized_geometry)
-    K, L = gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
+    I, J = spm_gi.compute_panel_geometric_integrals_source_nb(panelized_geometry)
+    K, L = vpm_gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
     print('Finished computing geometric integrals')
     print('-' * 80)
     print('Beginning to compute source vortex strengths')
-    lam, gamma = compute_multi_element_source_vortex_strengths_nb(panelized_geometry, V, I, J, K, L, k_start, k_end,
-                                                                  num_airfoil, num_points)
+    lam, gamma = compute_source_vortex_strengths_nb(panelized_geometry, V, I, J, K, L, k_start, k_end,
+                                                    num_airfoil, num_points)
     print('Finished computing source vortex strengths')
     print('-' * 80)
 

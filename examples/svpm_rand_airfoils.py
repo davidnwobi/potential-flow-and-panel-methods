@@ -4,7 +4,7 @@ import matplotlib.colors as colors
 from matplotlib import ticker
 from src.util import PanelGenerator
 from src.util import compute_ellipse_and_circulation
-from src.panel_methods import *
+from src.panel_methods.svpm import run_panel_method
 from src.util import interpolator
 from src.code_collections import data_collections as dc
 from aeropy import xfoil_module as xf
@@ -80,8 +80,8 @@ if __name__ == '__main__':
             panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
             # %% VORTEX PANEL METHOD
-            V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
-                                                                                      V=V, AoA=AoA, x=x, y=y)
+            V_normal, V_tangential, lam, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry,
+                                                                        V=V, AoA=AoA, x=x, y=y)
             sumGamma = np.sum(gamma * panelized_geometry.S)
             sumLambda = np.sum(lam * panelized_geometry.S)
 

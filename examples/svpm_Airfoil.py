@@ -4,7 +4,7 @@ import matplotlib.colors as colors
 from matplotlib import ticker
 from src.util import PanelGenerator
 from src.util import compute_ellipse_and_circulation
-from src.panel_methods import *
+from src.panel_methods.svpm import run_panel_method
 from src.code_collections import data_collections as dc
 from src.util import generate_four_digit_NACA
 from aeropy import xfoil_module as xf
@@ -14,7 +14,7 @@ import time
 from pathlib import Path
 
 airfoil = '4412'
-AoA = 10
+AoA = 0
 res = None
 x_foil_cl = 0
 try:
@@ -45,8 +45,8 @@ time_start = time.time()
 # Not entirely true. See `spm_airfoil.py` for updated version
 
 # %% PANEL METHOD GEOMETRY SETUP
-XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=numB, chord_length=1, b=2)
-
+# XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length=1, b=2)
+XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length=1, b=2)
 geometry = dc.Geometry(x=XB, y=YB, AoA=AoA)
 panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry=geometry)
 
@@ -57,8 +57,8 @@ panel_normal_vector_X = panelized_geometry.xC + panelized_geometry.S / 2 * np.co
 panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
 # %% VORTEX PANEL METHOD
-V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
-                                                                          V=V, AoA=AoA, x=x, y=y)
+V_normal, V_tangential, lam, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry,
+                                                            V=V, AoA=AoA, x=x, y=y)
 sumGamma = np.sum(gamma * panelized_geometry.S)
 sumLambda = np.sum(lam * panelized_geometry.S)
 print('Sum of Vortex Circulation: ', sumGamma)

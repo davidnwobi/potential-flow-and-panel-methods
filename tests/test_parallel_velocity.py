@@ -3,8 +3,10 @@ import numpy as np
 from pathlib import Path
 from src.code_collections import Geometry, MultiElementAirfoil, PanelizedGeometry
 from src.multi_element_airfoil import create_clean_panelized_geometry
-from src.panel_methods import run_source_vortex_panel_method_svpm, compute_grid_velocity_source_vortex_mp
+from src.panel_methods.multi_svpm.multi_element_svpm_funcs import run_panel_method
+from src.panel_methods.p_multi_svpm.parallel_multi_element_svpm_funcs import compute_grid_velocity
 import h5py
+
 
 @pytest.fixture
 def default_data(request):
@@ -54,18 +56,18 @@ def test_parallel_velocity(default_data):
 
     geometries, total_geometry, total_panelized_geometry_nb, total_panelized_geometry, num_points, num_airfoils, x, y, n_jobs = default_data
 
-    V_normal, V_tangential, lam, gamma, u_bench, v_bench = run_source_vortex_panel_method_svpm(geometries,
-                                                                                               total_panelized_geometry_nb,
-                                                                                               x=x,
-                                                                                               y=y,
-                                                                                               num_airfoil=num_airfoils,
-                                                                                               num_points=num_points,
-                                                                                               V=V, AoA=AoA)
+    V_normal, V_tangential, lam, gamma, u_bench, v_bench = run_panel_method(geometries,
+                                                                            total_panelized_geometry_nb,
+                                                                            x=x,
+                                                                            y=y,
+                                                                            num_airfoil=num_airfoils,
+                                                                            num_points=num_points,
+                                                                            V=V, AoA=AoA)
 
-    u, v = compute_grid_velocity_source_vortex_mp(panelized_geometry=total_panelized_geometry, x=x,
-                                                  y=y,
-                                                  lam=lam, gamma=gamma, free_stream_velocity=V,
-                                                  AoA=AoA, num_cores=n_jobs)
+    u, v = compute_grid_velocity(geometries, panelized_geometry=total_panelized_geometry, x=x,
+                                 y=y,
+                                 lam=lam, gamma=gamma, free_stream_velocity=V,
+                                 AoA=AoA, num_cores=n_jobs)
 
     np.testing.assert_allclose(u, u_bench)
     np.testing.assert_allclose(v, v_bench)

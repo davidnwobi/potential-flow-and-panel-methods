@@ -5,7 +5,7 @@ from src.code_collections import Geometry, MultiElementAirfoil, Ellipse, FlowFie
 from src.util import compute_ellipse_and_circulation
 from src.multi_element_airfoil import create_clean_panelized_geometry
 from src.util import PanelGenerator
-from src.panel_methods import run_source_vortex_panel_method_svpm
+from src.panel_methods.multi_svpm import run_panel_method
 from matplotlib import colors, ticker
 import warnings
 
@@ -14,13 +14,13 @@ xfoil_usable_airfoil_directory_path = Path('../xfoil_usable')
 #%% BELOW ARE VARIOUS CONFIGURATIONS FOR THE MULTI-ELEMENT AIRFOIL YOU CAN PLAY WITH
 
 
-# airfoils = ['2412']
-# load_NACA = [True]
-# num_points = np.array([171])
-# AF_flip = np.array([[1, 1]])
-# AF_scale = np.array([1])
-# AF_angle = np.array([-6])
-# AF_offset = np.array([[0, 0]])
+airfoils = ['0012']
+load_NACA = [True]
+num_points = np.array([301])
+AF_flip = np.array([[1, 1]])
+AF_scale = np.array([1])
+AF_angle = np.array([-6])
+AF_offset = np.array([[0, 0]])
 
 # airfoils = ['0012', '0012']
 # load_NACA = [True, True]
@@ -41,8 +41,8 @@ AF_flip = np.array([[1, 1],
 AF_scale = np.array([1, 1, 1])
 AF_angle = np.array([0, 0, 0])
 AF_offset = np.array([[0, 0],
-                      [2, 0],
-                      [4, 0]])
+                      [1.002, 0],
+                      [2.004, 0]])
 
 
 
@@ -194,12 +194,12 @@ V_normal, V_tangential, lam, gamma, u, v = 0, 0, 0, 0, 0, 0
 num_points = np.array([len(geometry.x) for geometry in geometries])
 
 if need_velocity:
-    V_normal, V_tangential, lam, gamma, u, v = run_source_vortex_panel_method_svpm(geometries, total_panelized_geometry,
-                                                                                   x=x,
-                                                                                   y=y,
-                                                                                   num_airfoil=num_airfoils,
-                                                                                   num_points=num_points,
-                                                                                   V=V, AoA=AoA)
+    V_normal, V_tangential, lam, gamma, u, v = run_panel_method(geometries, total_panelized_geometry,
+                                                                x=x,
+                                                                y=y,
+                                                                num_airfoil=num_airfoils,
+                                                                num_points=num_points,
+                                                                V=V, AoA=AoA)
     sumLambda = np.sum(lam * total_panelized_geometry.S)
     sumGamma = np.sum(gamma * total_panelized_geometry.S)
     print('Sum of gamma: ', np.sum(gamma * total_panelized_geometry.S))

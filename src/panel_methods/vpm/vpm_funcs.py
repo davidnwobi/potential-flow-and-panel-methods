@@ -1,10 +1,11 @@
+import src.panel_methods.vpm.vpm_geometric_integrals as vpm_gi
 from .. import utils as gi
 from ..utils import point_in_polygon
 from ...code_collections import data_collections as dc
 import numpy as np
 import numba as nb
 
-__all__ = ['run_vortex_panel_method', 'compute_grid_velocity_vortex']
+__all__ = ['run_panel_method', 'compute_grid_velocity']
 
 @nb.njit(cache=True)
 def compute_vortex_strengths(panelized_geometry, V, K):
@@ -20,8 +21,8 @@ def compute_vortex_strengths(panelized_geometry, V, K):
 
 
 @nb.njit(cache=True)
-def compute_grid_velocity_vortex(panelized_geometry, x, y, gamma, free_stream_velocity=1, AoA=0):
-    Nxpj, Nypj = gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
+def compute_grid_velocity(panelized_geometry, x, y, gamma, free_stream_velocity=1, AoA=0):
+    Nxpj, Nypj = vpm_gi.compute_grid_geometric_integrals_vortex_nb(panelized_geometry, x, y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
     X = np.append(X, X[0])
@@ -41,7 +42,7 @@ def compute_grid_velocity_vortex(panelized_geometry, x, y, gamma, free_stream_ve
 
 
 @nb.njit(cache=True)
-def compute_panel_velocities_vortex(panelized_geometry, gamma, V, K, L):
+def compute_panel_velocities(panelized_geometry, gamma, V, K, L):
     V_normal = np.empty(len(panelized_geometry.xC))
     V_tangential = np.empty(len(panelized_geometry.xC))
     for i in range(len(panelized_geometry.xC)):
@@ -51,13 +52,13 @@ def compute_panel_velocities_vortex(panelized_geometry, gamma, V, K, L):
     return V_normal, V_tangential
 
 
-def run_vortex_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
-                            y) -> dc.VortexPanelMethodResults:
-    K, L = gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
+def run_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
+                     y) -> dc.VortexPanelMethodResults:
+    K, L = vpm_gi.compute_panel_geometric_integrals_vortex_nb(panelized_geometry)
     gamma = compute_vortex_strengths(panelized_geometry, V, K)
-    V_normal, V_tangential = compute_panel_velocities_vortex(panelized_geometry, gamma, V, K, L)
+    V_normal, V_tangential = compute_panel_velocities(panelized_geometry, gamma, V, K, L)
 
-    u, v = compute_grid_velocity_vortex(panelized_geometry, x, y, gamma, V, AoA)
+    u, v = compute_grid_velocity(panelized_geometry, x, y, gamma, V, AoA)
 
     panel_results = dc.VortexPanelMethodResults(V_normal=V_normal, V_tangential=V_tangential,
                                                 Vortex_Strengths=gamma, V_horizontal=u, V_vertical=v)

@@ -1,15 +1,10 @@
 import numpy as np
 import h5py
-from itertools import product
 import pathlib
-import tqdm
 from joblib import Parallel, delayed
 from .. import utils as gi
 from ...code_collections import data_collections as dc
 import numba as nb
-import time as t
-import timeit
-from functools import partial
 
 __all__ = ['compute_grid_geometric_integrals_source_mp', 'compute_grid_geometric_integrals_vortex_mp']
 
@@ -24,7 +19,6 @@ def compute_grid_geometric_integrals_source_internal(panel_geometry: dc.Panelize
     :param core_idx:
     :return:
     """
-    print(f'\tGrid Geometric integrals core {core_idx}')
     pathlib.Path.unlink(f'Mxpj_{core_idx}.h5', missing_ok=True)
     pathlib.Path.unlink(f'Mypj_{core_idx}.h5', missing_ok=True)
     Mxpjf = h5py.File(f'Mxpj_{core_idx}.h5', 'w')
@@ -62,7 +56,6 @@ def actual_computation_grid_geometric_integrals_source(grid_x, grid_y, S, phi, X
 
 def compute_grid_geometric_integrals_vortex_internal(panel_geometry: dc.PanelizedGeometry, grid_x: np.ndarray,
                                                      grid_y: np.ndarray, core_idx: int):
-    print(f'\tGrid Geometric integrals core {core_idx}')
     pathlib.Path.unlink(f'Nxpj_{core_idx}.h5', missing_ok=True)
     pathlib.Path.unlink(f'Nypj_{core_idx}.h5', missing_ok=True)
     Nxpjf = h5py.File(f'Nxpj_{core_idx}.h5', 'w')

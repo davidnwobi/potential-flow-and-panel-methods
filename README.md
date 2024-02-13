@@ -294,10 +294,10 @@ The Kutta condition is satisfied by replacing an equation in the system of equat
 As for the code, it is the same as the source panel method except for the function call.
 
 ```python
-from src.panel_methods import run_vortex_panel_method
+from src.panel_methods import run_panel_method
 
-V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
-                                                              x=x, y=y)
+V_normal, V_tangential, gamma, u, v = run_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
+                                                       x=x, y=y)
 ```
 See [`vpm_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to use the results.
 

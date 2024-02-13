@@ -3,8 +3,12 @@ import numpy as np
 from pathlib import Path
 from src.code_collections import Geometry, MultiElementAirfoil, PanelizedGeometry
 from src.multi_element_airfoil import create_clean_panelized_geometry
-from src.panel_methods import compute_grid_geometric_integrals_source_mp, compute_grid_geometric_integrals_source, \
-    compute_grid_geometric_integrals_vortex_mp, compute_grid_geometric_integrals_vortex
+from src.panel_methods.p_multi_svpm.parallel_geometric_integrals import (compute_grid_geometric_integrals_source_mp,
+                                                                         compute_grid_geometric_integrals_vortex_mp)
+
+from src.panel_methods.spm.spm_geometric_integrals import compute_grid_geometric_integrals_source
+from src.panel_methods.vpm.vpm_geometric_integrals import compute_grid_geometric_integrals_vortex
+from src.panel_methods.spm import compute_grid_geometric_integrals_source
 import h5py
 
 

@@ -1,17 +1,17 @@
-from src.panel_methods import utils as gi
+from . import spm_geometric_integrals as spm_gi
 from src.code_collections import data_collections as dc
 import numpy as np
 import numba as nb
 
-__all__ = ['run_source_panel_method']
+
 
 from ..utils import point_in_polygon
 
 @nb.njit(cache=True)
-def compute_grid_velocity_source(panelized_geometry: dc.PanelizedGeometryNb, x: np.ndarray, y: np.ndarray,
-                                 lam: np.ndarray,
-                                 free_stream_velocity: float = 1., AoA: float = 0.) -> (np.ndarray, np.ndarray):
-    Mxpj, Mypj = gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
+def compute_grid_velocity(panelized_geometry: dc.PanelizedGeometryNb, x: np.ndarray, y: np.ndarray,
+                          lam: np.ndarray,
+                          free_stream_velocity: float = 1., AoA: float = 0.) -> (np.ndarray, np.ndarray):
+    Mxpj, Mypj = spm_gi.compute_grid_geometric_integrals_source_nb(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
     X = np.append(X, X[0])
@@ -39,9 +39,9 @@ def compute_source_strengths(panelized_geometry: dc.PanelizedGeometryNb, V: floa
 
 
 @nb.njit(cache=True)
-def compute_panel_velocities_source(panelized_geometry: dc.PanelizedGeometryNb, lam: np.ndarray, V: float,
-                                    I: np.ndarray,
-                                    J: np.ndarray) -> (np.ndarray, np.ndarray):
+def compute_panel_velocities(panelized_geometry: dc.PanelizedGeometryNb, lam: np.ndarray, V: float,
+                             I: np.ndarray,
+                             J: np.ndarray) -> (np.ndarray, np.ndarray):
     V_normal = np.empty(len(panelized_geometry.xC))
     V_tangential = np.empty(len(panelized_geometry.xC))
     for i in range(len(panelized_geometry.xC)):
@@ -50,15 +50,15 @@ def compute_panel_velocities_source(panelized_geometry: dc.PanelizedGeometryNb, 
     return V_normal, V_tangential
 
 
-def run_source_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
-                            y) -> dc.SourcePanelMethodResults:
-    I, J = gi.compute_panel_geometric_integrals_source_nb(panel_geometry=panelized_geometry)
+def run_panel_method(panelized_geometry: dc.PanelizedGeometryNb, V: float, AoA: float, x,
+                     y) -> dc.SourcePanelMethodResults:
+    I, J = spm_gi.compute_panel_geometric_integrals_source_nb(panel_geometry=panelized_geometry)
     lam = compute_source_strengths(panelized_geometry=panelized_geometry, V=V, I=I)
-    V_normal, V_tangential = compute_panel_velocities_source(panelized_geometry=panelized_geometry, lam=lam, V=V, I=I,
-                                                             J=J)
-    u, v = compute_grid_velocity_source(panelized_geometry=panelized_geometry, x=x, y=y, lam=lam,
-                                        free_stream_velocity=V,
-                                        AoA=AoA)
+    V_normal, V_tangential = compute_panel_velocities(panelized_geometry=panelized_geometry, lam=lam, V=V, I=I,
+                                                      J=J)
+    u, v = compute_grid_velocity(panelized_geometry=panelized_geometry, x=x, y=y, lam=lam,
+                                 free_stream_velocity=V,
+                                 AoA=AoA)
 
     panel_results = dc.SourcePanelMethodResults(V_normal=V_normal, V_tangential=V_tangential,
                                                 Source_Strengths=lam, V_horizontal=u, V_vertical=v)
