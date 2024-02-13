@@ -20,7 +20,7 @@ It provides tools that allows you to do simple things like :
 </figure>
 
 
-and... (eventually) do them as fast as possible.
+<br>and... (eventually) do them as fast as possible.
 
 ## Acknowledgements
 Much thanks goes to [JoshTheEngineer](https://www.youtube.com/@JoshTheEngineer). His videos, derivations and code implementations were an invaluable resource for building and validating this project, especially the panel methods.
@@ -147,7 +147,7 @@ if __name__ == '__main__':
      <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Enclosing the vortex </figcaption>
 </figure>
 
-Output:
+<br>Output:
 ```text
 circulation: 125.66287765465529
 ```
@@ -158,7 +158,7 @@ circulation: 125.66287765465529
         <figcaption>Lifting flow over a cylinder at 0 degrees AoA: Not enclosing the vortex </figcaption>
 </figure>
 
-Output:
+<br>Output:
 ```text
 circulation: -1.9131363160340698e-12
 ```
@@ -306,7 +306,7 @@ See [`vpm_Airfoil.py`](examples/vpm_Airfoil.py) for an demonstration of how to u
  <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA</figcaption>
 </figure>
 
-Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
+<br>Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
 Even with a well discretized XFOIL generated airfoil, the C<sub>p</sub> value oscillates slightly.
 Now, observe what happens when the same airfoil is generated rather than using an nicer airfoil. This is something to investigate at a later time. Perhaps it's a bug.
 
@@ -322,7 +322,7 @@ XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=171, chord_length
  <figcaption>Vortex Panel Method for NACA 2412 at 6 degrees AoA with a generated airfoil</figcaption>
 </figure>
 
-Interestingly, the Cl calculated from CP (effectively the grid velocity)  as well as the lift force from the computed gamma values are still consistent.
+<br>Interestingly, the Cl calculated from CP (effectively the grid velocity)  as well as the lift force from the computed gamma values are still consistent.
 
 
 #### With a lower discretization
@@ -367,7 +367,7 @@ See [`svpm_Airfoil.py`](examples/svpm_Airfoil.py) for an demonstration of how to
  <figcaption>Source Vortex Panel Method for NACA 2412 at 6 degrees AoA with a poorly discritized airfoil</figcaption>
 </figure>
 
-Much better (in terms of consistency) than the vortex panel method.
+<br>Much better (in terms of consistency) than the vortex panel method.
 
 ## Multi-Element Airfoil
 
