@@ -412,6 +412,11 @@ AF_offset = np.array([[0, 0],
 
 num_airfoils = len(airfoils)
 
+
+multi_element_airfoil = MultiElementAirfoil(airfoils=airfoils, load_NACA=load_NACA, num_points=num_points,
+                                            AF_flip=AF_flip, AF_scale=AF_scale, AF_angle=AF_angle,
+                                            AF_offset=AF_offset)
+
 """                  
 Individual  All               Total
 Geometries  geometries        geometry
@@ -419,10 +424,6 @@ In a list   combined          turned into
             into a single     panelized
             geometry object   geometry
 """     
-multi_element_airfoil = MultiElementAirfoil(airfoils=airfoils, load_NACA=load_NACA, num_points=num_points,
-                                            AF_flip=AF_flip, AF_scale=AF_scale, AF_angle=AF_angle,
-                                            AF_offset=AF_offset)
-
 geometries, total_geometry, total_panelized_geometry_nb = create_clean_panelized_geometry(multi_element_airfoil,
                                                                                           airfoil_directory_path, AoA)
 
