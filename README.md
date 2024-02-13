@@ -14,6 +14,9 @@ It provides tools that allows you to do simple things like :
 
 and more complex things like this:
 
+
+
+
 <div style="text-align: center;">
     <img src='images/MultiElementSolution.png'>
  <figcaption>Source Vortex Panel Method for Slotted NACA0012 at 8 degrees AoA</figcaption>
@@ -462,7 +465,7 @@ Circulation (Evaluated from grid velocities):  3.12944115066216e-15
 CL (Calculated from G):  6.25888230132432e-15
 ```
 
-This serves for now will as a reasonable sanity check for the results. Both lambda and gamma are very small, there is no area enclosed Cp graph and the flow field is symmetric about the x-axis.
+This, for now, will serve as a reasonable sanity check for the results. Both lambda and gamma are very small, there is no area enclosed Cp graph and the flow field is symmetric about the x-axis.
 
 
 ## Parallel Implementation
