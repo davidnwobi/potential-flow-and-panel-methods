@@ -474,7 +474,7 @@ This is becomes useful when calculating large grids. Likely because of the new b
 ```python
 from src.panel_methods.p_multi_svpm import run_panel_method
 
-njobs = 4  # Number of cores to use
+njobs = 4  # Number of processes to create
 
 V_normal, V_tangential, lam, gamma, u, v = run_panel_method(geometries, total_panelized_geometry,
                                                             x=x,
