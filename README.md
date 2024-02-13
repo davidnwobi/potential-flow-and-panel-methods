@@ -8,8 +8,8 @@ It provides tools that allows you to do simple things like :
     <img src='images/ContorPlot.png' width='600', class="center">
  <figcaption>Lifting flow over a cylinder at 6 degrees AoA</figcaption>
 </figure>
-<br>
-and more complex things like this:
+
+<br>and more complex things like this:
 
 
 
